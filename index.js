@@ -24,8 +24,6 @@ server.post('/api/users', (req, res)=>{
         res.status(500).json({errorMessage: "There was an error while saving the user to the database" }); 
     }
 
-    
-
     // userInfo.id = shortid.generate();
     // users.push(userInfo)
     // res.status(201).json(userInfo); //201 means it's been created successfully
@@ -34,16 +32,33 @@ server.post('/api/users', (req, res)=>{
 
 //GET USERS
 server.get('/api/users', (req, res)=>{
-    res.status(200).json(users)
+    const userInfo = req.body;
+
+    //SERVER ERROR
+    if(!userInfo){
+        res.status(500).json({errorMessage: "The users information could not be retrieved." }); 
+    }
+   
+    //SUCCESSFUL RESPONSE
+   if(userInfo){
+    res.status(200).json(users)   
+   } 
+   
 })
 
 //GET USER BY ID
 server.get('/api/users/:id', (req, res)=>{
-let id = req.params.id;
-const userInfo = users.find((item)=>item.id);
-// const user = users.where(id === String(id))
+let id = +req.params.id;
+console.log(id, 'req params id')
+const userInfo = users.find(({userId})=>userId === id);
 
-    res.status(200).json(userInfo)
+if(userInfo){
+    res.status(200).json(userInfo)   
+   } 
+else{
+    res.status(404).json({ message: "The user with the specified ID does not exist." })   
+   } 
+    // res.status(200).json(userInfo)
 })
 
 
